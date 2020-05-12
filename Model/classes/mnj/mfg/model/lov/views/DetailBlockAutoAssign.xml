@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="DetailBlockAutoAssign"
+  Version="11.1.1.62.29"
+  InheritPersonalization="true"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  RowClass="mnj.mfg.model.lov.views.DetailBlockAutoAssignRowImpl"
+  ComponentClass="mnj.mfg.model.lov.views.DetailBlockAutoAssignImpl"
+  PageIterMode="Full"
+  UseGlueCode="false">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|Coll|VarAccess"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <Properties>
+    <SchemaBasedProperties>
+      <LABEL
+        ResId="mnj.mfg.model.lov.views.DetailBlockAutoAssign_LABEL"/>
+    </SchemaBasedProperties>
+  </Properties>
+  <Variable
+    Name="P_ORG_ID"
+    Kind="where"
+    Type="java.lang.String">
+    <TransientExpression><![CDATA[adf.context.sessionScope.orgId]]></TransientExpression>
+  </Variable>
+  <SQLQuery>
+    <![CDATA[SELECT 'Cutting' PRI_DEP, 'Cutting' FIN_DEP,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                               :P_ORG_ID)
+                                                              PRIMARY_INV_ORG,:P_ORG_ID PRIMARY_INV_ORG_ID,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                                   :P_ORG_ID)
+                                                                FINAL_INV_ORG,:P_ORG_ID FINAL_INV_ORG_ID , 1 OP_SEQ
+  FROM DUAL
+UNION ALL
+SELECT 'Stitching' PRI_DEP, 'Stitching' FIN_DEP,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                               :P_ORG_ID)
+                                                              PRIMARY_INV_ORG,:P_ORG_ID PRIMARY_INV_ORG_ID,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                                   :P_ORG_ID)
+                                                                FINAL_INV_ORG,:P_ORG_ID FINAL_INV_ORG_ID , 4 OP_SEQ
+  FROM DUAL
+UNION ALL
+SELECT 'Washing' PRI_DEP, 'Washing' FIN_DEP,
+      (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                               :P_ORG_ID) PRIMARY_INV_ORG,
+        :P_ORG_ID PRIMARY_INV_ORG_ID,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                                   (CASE WHEN :P_ORG_ID IN (340,341) THEN 343 
+                                     WHEN :P_ORG_ID IN (342,443) THEN 344
+                                     ELSE 343
+                                END  ))
+                                                                FINAL_INV_ORG,
+                                                                (CASE WHEN :P_ORG_ID IN (340,341) THEN '343'
+                                     WHEN :P_ORG_ID IN (342,443) THEN '344'
+                                     ELSE '343'
+                                END  ) FINAL_INV_ORG_ID , 5 OP_SEQ
+  FROM DUAL
+UNION ALL
+SELECT 'Finishing' PRI_DEP, 'Finishing' FIN_DEP,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                               :P_ORG_ID)
+                                                              PRIMARY_INV_ORG,:P_ORG_ID PRIMARY_INV_ORG_ID,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                                   :P_ORG_ID)
+                                                                FINAL_INV_ORG,:P_ORG_ID FINAL_INV_ORG_ID , 6 OP_SEQ
+  FROM DUAL
+UNION ALL
+SELECT 'Printing' PRI_DEP, 'Printing' FIN_DEP,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                               :P_ORG_ID)
+                                                              PRIMARY_INV_ORG,:P_ORG_ID PRIMARY_INV_ORG_ID,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                                   :P_ORG_ID)
+                                                                FINAL_INV_ORG,:P_ORG_ID FINAL_INV_ORG_ID , 3 OP_SEQ
+  FROM DUAL
+UNION ALL
+SELECT 'Embriodery' PRI_DEP, 'Embriodery' FIN_DEP,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                               :P_ORG_ID)
+                                                              PRIMARY_INV_ORG,:P_ORG_ID PRIMARY_INV_ORG_ID,
+       (SELECT HOU.NAME
+          FROM HR_ORGANIZATION_UNITS HOU
+         WHERE HOU.ORGANIZATION_ID =
+                                   :P_ORG_ID)
+                                                                FINAL_INV_ORG,:P_ORG_ID FINAL_INV_ORG_ID , 2 OP_SEQ
+FROM DUAL
+ORDER BY OP_SEQ]]>
+  </SQLQuery>
+  <ViewAttribute
+    Name="PriDep"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="255"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PRI_DEP"
+    Expression="PRI_DEP"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="9"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="FinDep"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="9"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="FIN_DEP"
+    Expression="FIN_DEP"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="9"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PrimaryInvOrg"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PRIMARY_INV_ORG"
+    Expression="PRIMARY_INV_ORG"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PrimaryInvOrgId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="32"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PRIMARY_INV_ORG_ID"
+    Expression="PRIMARY_INV_ORG_ID"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="32"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="FinalInvOrg"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="FINAL_INV_ORG"
+    Expression="FINAL_INV_ORG"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="FinalInvOrgId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="32"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="FINAL_INV_ORG_ID"
+    Expression="FINAL_INV_ORG_ID"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="32"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="OpSeq"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="OP_SEQ"
+    Expression="OP_SEQ"
+    SQLType="NUMERIC">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="39"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ResourceBundle>
+    <PropertiesBundle
+      PropertiesFile="mnj.mfg.model.ModelBundle"/>
+  </ResourceBundle>
+</ViewObject>

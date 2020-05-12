@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="DepAssignVO"
+  Version="11.1.1.62.29"
+  InheritPersonalization="true"
+  BindingStyle="OracleName"
+  CustomQuery="true"
+  PageIterMode="Full"
+  UseGlueCode="false">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|VarAccess"/>
+    <Attr Name="_isExpertMode" Value="true"/>
+  </DesignTime>
+  <ViewAccessor
+    Name="InvOrgVO1"
+    ViewObjectName="mnj.mfg.model.lov.views.InvOrgVO"
+    RowLevelBinds="true"/>
+  <ViewAccessor
+    Name="DeaprtmentsVO1"
+    ViewObjectName="mnj.mfg.model.lov.views.DeaprtmentsVO"
+    RowLevelBinds="true"/>
+  <ListBinding
+    Name="LOV_PrimaryInvOrg"
+    ListVOName="InvOrgVO1"
+    ListRangeSize="10"
+    NullValueFlag="none"
+    NullValueId="LOV_PrimaryInvOrg_LOVUIHints_NullValueId"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="PrimaryInvOrg"/>
+    </AttrArray>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="PrimaryMfgOrgId"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="InvOrgName"/>
+      <Item Value="InvOrg"/>
+    </AttrArray>
+    <DisplayCriteria
+      Hint="showAndExecute"/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_FinalInvOrg"
+    ListVOName="InvOrgVO1"
+    ListRangeSize="10"
+    NullValueFlag="none"
+    NullValueId="LOV_FinalInvOrg_LOVUIHints_NullValueId"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="FinalInvOrg"/>
+    </AttrArray>
+    <AttrArray Name="DerivedAttrNames">
+      <Item Value="FinalMfgOrgId"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="InvOrgName"/>
+      <Item Value="InvOrg"/>
+    </AttrArray>
+    <DisplayCriteria
+      Hint="showAndExecute"/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_PrimaryDepartment"
+    ListVOName="DeaprtmentsVO1"
+    ListRangeSize="10"
+    NullValueFlag="none"
+    NullValueId="LOV_PrimaryDepartment_LOVUIHints_NullValueId"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="PrimaryDepartment"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Dep"/>
+    </AttrArray>
+    <DisplayCriteria
+      Hint="showAndExecute"/>
+  </ListBinding>
+  <ListBinding
+    Name="LOV_FinalDepartment"
+    ListVOName="DeaprtmentsVO1"
+    ListRangeSize="10"
+    NullValueFlag="none"
+    NullValueId="LOV_FinalDepartment_LOVUIHints_NullValueId"
+    MRUCount="0">
+    <AttrArray Name="AttrNames">
+      <Item Value="FinalDepartment"/>
+    </AttrArray>
+    <AttrArray Name="ListAttrNames">
+      <Item Value="Dep"/>
+    </AttrArray>
+    <DisplayCriteria
+      Hint="showAndExecute"/>
+  </ListBinding>
+  <SQLQuery>
+    <![CDATA[SELECT DepAssignEO.DEP_ASSIGN_ID, 
+       DepAssignEO.STN_LINE_ID, 
+       DepAssignEO.PRIMARY_MFG_ORG_ID, 
+       DepAssignEO.PRIMARY_DEPARTMENT, 
+       DepAssignEO.FINAL_MFG_ORG_ID, 
+       DepAssignEO.FINAL_DEPARTMENT, 
+       DepAssignEO.CREATION_DATE, 
+       DepAssignEO.CREATED_BY, 
+       DepAssignEO.LAST_UPDATED_BY, 
+       DepAssignEO.ORG_ID, 
+       DepAssignEO.LAST_UPDATED_DATE, 
+       DepAssignEO.USERID, 
+       DepAssignEO.RESPID, 
+       DepAssignEO.RESPAPPLID,
+      (
+      SELECT HOU.NAME FROM HR_ORGANIZATION_UNITS HOU WHERE HOU.ORGANIZATION_ID = DepAssignEO.PRIMARY_MFG_ORG_ID
+      ) PRIMARY_INV_ORG,
+      (
+      SELECT HOU.NAME FROM HR_ORGANIZATION_UNITS HOU WHERE HOU.ORGANIZATION_ID = DepAssignEO.FINAL_MFG_ORG_ID
+      ) FINAL_INV_ORG, 
+       DepAssignEO.NEGOTIABLE_PRICE, 
+       DepAssignEO.OPERATION_SEQUENCE
+FROM MNJ_MFG_OSP_DEP_ASSIGN DepAssignEO]]>
+  </SQLQuery>
+  <EntityUsage
+    Name="DepAssignEO"
+    Entity="mnj.mfg.model.entities.DepAssignEO"/>
+  <ViewAttribute
+    Name="DepAssignId"
+    IsNotNull="true"
+    PrecisionRule="true"
+    EntityAttrName="DepAssignId"
+    EntityUsage="DepAssignEO"
+    AliasName="DEP_ASSIGN_ID"/>
+  <ViewAttribute
+    Name="StnLineId"
+    PrecisionRule="true"
+    EntityAttrName="StnLineId"
+    EntityUsage="DepAssignEO"
+    AliasName="STN_LINE_ID"/>
+  <ViewAttribute
+    Name="PrimaryMfgOrgId"
+    PrecisionRule="true"
+    EntityAttrName="PrimaryMfgOrgId"
+    EntityUsage="DepAssignEO"
+    AliasName="PRIMARY_MFG_ORG_ID"/>
+  <ViewAttribute
+    Name="PrimaryDepartment"
+    PrecisionRule="true"
+    EntityAttrName="PrimaryDepartment"
+    EntityUsage="DepAssignEO"
+    AliasName="PRIMARY_DEPARTMENT"
+    LOVName="LOV_PrimaryDepartment">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="FinalMfgOrgId"
+    PrecisionRule="true"
+    EntityAttrName="FinalMfgOrgId"
+    EntityUsage="DepAssignEO"
+    AliasName="FINAL_MFG_ORG_ID"/>
+  <ViewAttribute
+    Name="FinalDepartment"
+    PrecisionRule="true"
+    EntityAttrName="FinalDepartment"
+    EntityUsage="DepAssignEO"
+    AliasName="FINAL_DEPARTMENT"
+    LOVName="LOV_FinalDepartment">
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="CreationDate"
+    PrecisionRule="true"
+    EntityAttrName="CreationDate"
+    EntityUsage="DepAssignEO"
+    AliasName="CREATION_DATE"/>
+  <ViewAttribute
+    Name="CreatedBy"
+    PrecisionRule="true"
+    EntityAttrName="CreatedBy"
+    EntityUsage="DepAssignEO"
+    AliasName="CREATED_BY"/>
+  <ViewAttribute
+    Name="LastUpdatedBy"
+    PrecisionRule="true"
+    EntityAttrName="LastUpdatedBy"
+    EntityUsage="DepAssignEO"
+    AliasName="LAST_UPDATED_BY"/>
+  <ViewAttribute
+    Name="OrgId"
+    PrecisionRule="true"
+    EntityAttrName="OrgId"
+    EntityUsage="DepAssignEO"
+    AliasName="ORG_ID"/>
+  <ViewAttribute
+    Name="LastUpdatedDate"
+    PrecisionRule="true"
+    EntityAttrName="LastUpdatedDate"
+    EntityUsage="DepAssignEO"
+    AliasName="LAST_UPDATED_DATE"/>
+  <ViewAttribute
+    Name="Userid"
+    PrecisionRule="true"
+    EntityAttrName="Userid"
+    EntityUsage="DepAssignEO"
+    AliasName="USERID"/>
+  <ViewAttribute
+    Name="Respid"
+    PrecisionRule="true"
+    EntityAttrName="Respid"
+    EntityUsage="DepAssignEO"
+    AliasName="RESPID"/>
+  <ViewAttribute
+    Name="Respapplid"
+    PrecisionRule="true"
+    EntityAttrName="Respapplid"
+    EntityUsage="DepAssignEO"
+    AliasName="RESPAPPLID"/>
+  <ViewAttribute
+    Name="PrimaryInvOrg"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="PRIMARY_INV_ORG"
+    Expression="PRIMARY_INV_ORG"
+    SQLType="VARCHAR"
+    LOVName="LOV_PrimaryInvOrg">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="FinalInvOrg"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="240"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="FINAL_INV_ORG"
+    Expression="FINAL_INV_ORG"
+    SQLType="VARCHAR"
+    LOVName="LOV_FinalInvOrg">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="240"/>
+    </DesignTime>
+    <Properties>
+      <SchemaBasedProperties>
+        <CONTROLTYPE
+          Value="input_text_lov"/>
+      </SchemaBasedProperties>
+    </Properties>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="NegotiablePrice"
+    PrecisionRule="true"
+    AliasName="NEGOTIABLE_PRICE"
+    EntityAttrName="NegotiablePrice"
+    EntityUsage="DepAssignEO"/>
+  <ViewAttribute
+    Name="OperationSequence"
+    PrecisionRule="true"
+    EntityAttrName="OperationSequence"
+    EntityUsage="DepAssignEO"
+    AliasName="OPERATION_SEQUENCE"/>
+</ViewObject>

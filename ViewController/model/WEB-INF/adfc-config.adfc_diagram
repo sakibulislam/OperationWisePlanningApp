@@ -1,0 +1,55 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SDM>
+   <OverallProperties
+      id="OverallProperties1"/>
+   <View
+      id="View2">
+      <property
+         name="activityId">SearchPG</property>
+      <property
+         name="page">/SearchPG.jspx</property>
+      <property
+         name="description">&lt;html>&lt;p>&lt;b>SearchPG&lt;/b>&lt;/p>&lt;p>Activity Type:  View&lt;/p></property>
+      <property
+         name="exceptionHandler">false</property>
+      <property
+         name="y">-31.402344</property>
+      <property
+         name="x">74.0</property>
+   </View>
+   <View
+      id="View3">
+      <property
+         name="activityId">CreatePG</property>
+      <property
+         name="page">/CreatePG.jspx</property>
+      <property
+         name="description">&lt;html>&lt;p>&lt;b>CreatePG&lt;/b>&lt;/p>&lt;p>Activity Type:  View&lt;/p></property>
+      <property
+         name="exceptionHandler">false</property>
+      <property
+         name="y">-32.155273</property>
+      <property
+         name="x">361.0</property>
+   </View>
+   <ControlFlowCase
+      islink="true"
+      id="ControlFlowCase4"
+      from="View2"
+      to="View3">
+      <property
+         name="fromOutcome">Go to Create Page</property>
+      <property
+         name="sdm:polyPoints">R46,115.0,-35.25293,319.98715,-36.00586,L46</property>
+   </ControlFlowCase>
+   <ControlFlowCase
+      islink="true"
+      id="ControlFlowCase5"
+      from="View3"
+      to="View2">
+      <property
+         name="fromOutcome">Back to Search Page</property>
+      <property
+         name="sdm:polyPoints">L54,320.0,-29.00586,115.012856,-28.25293,R54</property>
+   </ControlFlowCase>
+</SDM>

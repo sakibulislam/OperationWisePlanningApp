@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pageDefinition xmlns="http://xmlns.oracle.com/adfm/uimodel"
+                version="11.1.1.62.29" id="SearchPGPageDef"
+                Package="view.pageDefs">
+  <parameters/>
+  <executables>
+    <variableIterator id="variables"/>
+    <iterator Binds="HeaderVO1" RangeSize="25" DataControl="MainAMDataControl"
+              id="HeaderVO1Iterator"/>
+    <searchRegion Criteria="HeaderVOCriteria"
+                  Customizer="oracle.jbo.uicli.binding.JUSearchBindingCustomizer"
+                  Binds="HeaderVO1Iterator" id="HeaderVOCriteriaQuery"/>
+    <invokeAction Binds="setSessionValues" id="SetSessionVal" Refresh="always"/>
+  </executables>
+  <bindings>
+    <tree IterBinding="HeaderVO1Iterator" id="HeaderVO1">
+      <nodeDefinition DefName="mnj.mfg.model.entities.HeaderVO"
+                      Name="HeaderVO10">
+        <AttrNames>
+          <Item Value="OspDocNo"/>
+          <Item Value="Style"/>
+          <Item Value="Season"/>
+          <Item Value="OspDate"/>
+          <Item Value="CreationDate"/>
+          <Item Value="DocNo"/>
+          <Item Value="BuyerName"/>
+          <Item Value="PocId"/>
+          <Item Value="OrgCode"/>
+        </AttrNames>
+      </nodeDefinition>
+    </tree>
+    <action IterBinding="HeaderVO1Iterator" id="CreateInsert"
+            RequiresUpdateModel="true" Action="createInsertRow"/>
+    <action IterBinding="HeaderVO1Iterator" id="Delete"
+            RequiresUpdateModel="false" Action="removeCurrentRow"/>
+    <action IterBinding="HeaderVO1Iterator" id="setCurrentRowWithKey"
+            RequiresUpdateModel="false" Action="setCurrentRowWithKey">
+      <NamedData NDName="rowKey" NDType="java.lang.String"/>
+    </action>
+    <methodAction id="setSessionValues"
+                  InstanceName="MainAMDataControl.dataProvider"
+                  DataControl="MainAMDataControl" RequiresUpdateModel="true"
+                  Action="invokeMethod" MethodName="setSessionValues"
+                  IsViewObjectMethod="false">
+      <NamedData NDName="orgId" NDValue="#{viewScope.OrgId}"
+                 NDType="java.lang.String"/>
+      <NamedData NDName="userId" NDValue="#{viewScope.UserId}"
+                 NDType="java.lang.String"/>
+      <NamedData NDName="respId" NDValue="#{viewScope.RespId}"
+                 NDType="java.lang.String"/>
+      <NamedData NDName="respAppl" NDValue="#{viewScope.RespApplId}"
+                 NDType="java.lang.String"/>
+    </methodAction>
+    <action id="Commit" RequiresUpdateModel="true" Action="commitTransaction"
+            DataControl="MainAMDataControl"/>
+  </bindings>
+</pageDefinition>
