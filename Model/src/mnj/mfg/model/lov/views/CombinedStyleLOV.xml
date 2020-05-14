@@ -34,8 +34,7 @@
     </Properties>
   </Variable>
   <SQLQuery>
-    <![CDATA[/* Formatted on 5/12/2020 6:08:08 PM (QP5 v5.256.13226.35510) */
-SELECT DISTINCT
+    <![CDATA[SELECT 
        si.poc_id,
        si.system_id,
        (ac.CUSTOMER_NAME || '/' || si.SEASON || '/' || NVL (si.STYLE, 'NULL'))

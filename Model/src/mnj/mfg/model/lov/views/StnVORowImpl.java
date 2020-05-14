@@ -14,6 +14,26 @@ public class StnVORowImpl extends ViewRowImpl {
      * AttributesEnum: generated enum for identifying attributes and accessors. Do not modify.
      */
     public enum AttributesEnum {
+        SystemId {
+            public Object get(StnVORowImpl obj) {
+                return obj.getSystemId();
+            }
+
+            public void put(StnVORowImpl obj, Object value) {
+                obj.setSystemId((Number)value);
+            }
+        }
+        ,
+        PocId {
+            public Object get(StnVORowImpl obj) {
+                return obj.getPocId();
+            }
+
+            public void put(StnVORowImpl obj, Object value) {
+                obj.setPocId((String)value);
+            }
+        }
+        ,
         BpoNo {
             public Object get(StnVORowImpl obj) {
                 return obj.getBpoNo();
@@ -152,6 +172,8 @@ public class StnVORowImpl extends ViewRowImpl {
     }
 
 
+    public static final int SYSTEMID = AttributesEnum.SystemId.index();
+    public static final int POCID = AttributesEnum.PocId.index();
     public static final int BPONO = AttributesEnum.BpoNo.index();
     public static final int ORDEREDQTY = AttributesEnum.OrderedQty.index();
     public static final int STN = AttributesEnum.Stn.index();
@@ -168,6 +190,38 @@ public class StnVORowImpl extends ViewRowImpl {
      * This is the default constructor (do not remove).
      */
     public StnVORowImpl() {
+    }
+
+    /**
+     * Gets the attribute value for the calculated attribute SystemId.
+     * @return the SystemId
+     */
+    public Number getSystemId() {
+        return (Number) getAttributeInternal(SYSTEMID);
+    }
+
+    /**
+     * Sets <code>value</code> as the attribute value for the calculated attribute SystemId.
+     * @param value value to set the  SystemId
+     */
+    public void setSystemId(Number value) {
+        setAttributeInternal(SYSTEMID, value);
+    }
+
+    /**
+     * Gets the attribute value for the calculated attribute PocId.
+     * @return the PocId
+     */
+    public String getPocId() {
+        return (String) getAttributeInternal(POCID);
+    }
+
+    /**
+     * Sets <code>value</code> as the attribute value for the calculated attribute PocId.
+     * @param value value to set the  PocId
+     */
+    public void setPocId(String value) {
+        setAttributeInternal(POCID, value);
     }
 
     /**

@@ -71,17 +71,8 @@ public class backigBean {
 
     public void editDialogLisSTNNew(DialogEvent dialogEvent) {//TODO
         if (dialogEvent.getOutcome().name().equals("ok")) {
-            //OperationBinding operationBinding = executeOperation("popSTN"); // this will be executed later
-            // department selection (Printing,Embriodery)
-            
             RichPopup.PopupHints hints = new RichPopup.PopupHints();
             getBindingDeptAssignPopUp().show(hints); // assign department pop up will appear
-            //operationBinding.execute();
-            
-          //  AdfFacesContext.getCurrentInstance().addPartialTarget(stnTable);
-          //  AdfFacesContext.getCurrentInstance().addPartialTarget(detailTable);
-
-
         } else if (dialogEvent.getOutcome().name().equals("cancel")) {
             BindingContainer bindings = getBindings();
 
@@ -490,27 +481,33 @@ Integer.parseInt(selectedRow.getAttribute("StnQty").toString());
     }
 
     public void DeptSelectionListner(DialogEvent dialogEvent) {//TODO
-        // Add event code here...
-        if (dialogEvent.getOutcome().name().equals("ok")) {
-            System.out.println("  In @OK  ");
-            OperationBinding operationBinding1 = executeOperation("DeptAssignToStns");
-            operationBinding1.execute();
-            
-            OperationBinding operationBinding2 = executeOperation("OrgAssignToPrintEmbriodery");
-            operationBinding2.execute();
-            
-            OperationBinding operationBinding = executeOperation("popSTN");
-            operationBinding.execute();
-            
-            
-            
-            AdfFacesContext.getCurrentInstance().addPartialTarget(stnTable);
-            AdfFacesContext.getCurrentInstance().addPartialTarget(detailTable);
+        
+        try {
+            if (dialogEvent.getOutcome().name().equals("ok")) {
+                System.out.println("  In @OK  ");
+                OperationBinding operationBinding1 = executeOperation("DeptAssignToStns"); //Unit check Done 
+                operationBinding1.execute();
+                
+                OperationBinding operationBinding2 = executeOperation("OrgAssignToPrintEmbriodery"); //method for selecting Org for printing and embroidery dept 
+                operationBinding2.execute();
+                
+                OperationBinding operationBinding = executeOperation("popSTN"); //Insert in STNLineVO from FillSTN Data
+                operationBinding.execute();
+                
+                
+                
+                AdfFacesContext.getCurrentInstance().addPartialTarget(stnTable);
+                AdfFacesContext.getCurrentInstance().addPartialTarget(detailTable);
 
-           // AdfFacesContext.getCurrentInstance().addPartialTarget(detailTable);
-        } else if (dialogEvent.getOutcome().name().equals("cancel")) {
-            ;
+               // AdfFacesContext.getCurrentInstance().addPartialTarget(detailTable);
+            } else if (dialogEvent.getOutcome().name().equals("cancel")) {
+                ;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        
         
     }
 

@@ -217,6 +217,46 @@ public class StnLineEOImpl extends EntityImpl {
             }
         }
         ,
+        FinItemCreated {
+            public Object get(StnLineEOImpl obj) {
+                return obj.getFinItemCreated();
+            }
+
+            public void put(StnLineEOImpl obj, Object value) {
+                obj.setFinItemCreated((String)value);
+            }
+        }
+        ,
+        ItemCreated {
+            public Object get(StnLineEOImpl obj) {
+                return obj.getItemCreated();
+            }
+
+            public void put(StnLineEOImpl obj, Object value) {
+                obj.setItemCreated((String)value);
+            }
+        }
+        ,
+        PocId {
+            public Object get(StnLineEOImpl obj) {
+                return obj.getPocId();
+            }
+
+            public void put(StnLineEOImpl obj, Object value) {
+                obj.setPocId((Number)value);
+            }
+        }
+        ,
+        SystemId {
+            public Object get(StnLineEOImpl obj) {
+                return obj.getSystemId();
+            }
+
+            public void put(StnLineEOImpl obj, Object value) {
+                obj.setSystemId((Number)value);
+            }
+        }
+        ,
         HeaderEO {
             public Object get(StnLineEOImpl obj) {
                 return obj.getHeaderEO();
@@ -274,6 +314,10 @@ public class StnLineEOImpl extends EntityImpl {
     public static final int RESPID = AttributesEnum.Respid.index();
     public static final int RESPAPPLID = AttributesEnum.Respapplid.index();
     public static final int WASH = AttributesEnum.Wash.index();
+    public static final int FINITEMCREATED = AttributesEnum.FinItemCreated.index();
+    public static final int ITEMCREATED = AttributesEnum.ItemCreated.index();
+    public static final int POCID = AttributesEnum.PocId.index();
+    public static final int SYSTEMID = AttributesEnum.SystemId.index();
     public static final int HEADEREO = AttributesEnum.HeaderEO.index();
 
     /**
@@ -595,6 +639,70 @@ public class StnLineEOImpl extends EntityImpl {
      */
     public void setWash(String value) {
         setAttributeInternal(WASH, value);
+    }
+
+    /**
+     * Gets the attribute value for FinItemCreated, using the alias name FinItemCreated.
+     * @return the FinItemCreated
+     */
+    public String getFinItemCreated() {
+        return (String)getAttributeInternal(FINITEMCREATED);
+    }
+
+    /**
+     * Sets <code>value</code> as the attribute value for FinItemCreated.
+     * @param value value to set the FinItemCreated
+     */
+    public void setFinItemCreated(String value) {
+        setAttributeInternal(FINITEMCREATED, value);
+    }
+
+    /**
+     * Gets the attribute value for ItemCreated, using the alias name ItemCreated.
+     * @return the ItemCreated
+     */
+    public String getItemCreated() {
+        return (String)getAttributeInternal(ITEMCREATED);
+    }
+
+    /**
+     * Sets <code>value</code> as the attribute value for ItemCreated.
+     * @param value value to set the ItemCreated
+     */
+    public void setItemCreated(String value) {
+        setAttributeInternal(ITEMCREATED, value);
+    }
+
+    /**
+     * Gets the attribute value for PocId, using the alias name PocId.
+     * @return the PocId
+     */
+    public Number getPocId() {
+        return (Number)getAttributeInternal(POCID);
+    }
+
+    /**
+     * Sets <code>value</code> as the attribute value for PocId.
+     * @param value value to set the PocId
+     */
+    public void setPocId(Number value) {
+        setAttributeInternal(POCID, value);
+    }
+
+    /**
+     * Gets the attribute value for SystemId, using the alias name SystemId.
+     * @return the SystemId
+     */
+    public Number getSystemId() {
+        return (Number)getAttributeInternal(SYSTEMID);
+    }
+
+    /**
+     * Sets <code>value</code> as the attribute value for SystemId.
+     * @param value value to set the SystemId
+     */
+    public void setSystemId(Number value) {
+        setAttributeInternal(SYSTEMID, value);
     }
 
     /**

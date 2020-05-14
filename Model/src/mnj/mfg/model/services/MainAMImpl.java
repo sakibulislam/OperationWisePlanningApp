@@ -105,17 +105,26 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
             String Style = getStyleName();
             String Season = getSeason();
             String org = getOrgId();
+            String PocId = getPocId();
+            String SystemId = getSystemId();
 
             //        Map sessionScope = ADFContext.getCurrent().getSessionScope();
             //
             //        String org = (String)sessionScope.get("orgId");
             //   String org ="340";
             ViewObject StnVo = getStnVO1();
-
-            StnVo.setWhereClause("BUYER_ID   = " + BuyerId +
-                                 " AND STYLE_NAME = '" + Style + "'" +
-                                 " AND SEASON     = '" + Season + "'" +
-                                 " AND ORG_ID     = '" + org + "'");
+/**
+ * Commented by Sakibul Islam for EBS Restructuring project on 13.May.2020
+ */
+//            StnVo.setWhereClause("BUYER_ID   = " + BuyerId +
+//                                 " AND STYLE_NAME = '" + Style + "'" +
+//                                 " AND SEASON     = '" + Season + "'" +
+//                                 " AND ORG_ID     = '" + org + "'");
+/**
+ * Added by Sakibul Islam for EBS Restructuring project on 13.May.2020
+ */            
+            StnVo.setWhereClause("POC_ID   = " + PocId +
+                                 " AND SYSTEM_ID = " + SystemId);
             System.out.println("Fill STN Query: " + StnVo.getQuery());
             StnVo.executeQuery();
         } catch (Exception e) {
@@ -127,7 +136,7 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
 
     }
 
-    public void popSTN() { //TODO
+    public void popSTN() { //Added by Sakibul Islam on 15.Apr.18
 
         System.out.println("In AM.......!");
 
@@ -141,9 +150,9 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
 
                 if (r.getAttribute("Flag") != null &&
                     r.getAttribute("Flag").equals("Y"))
-                    insertSTN(r); //insert into STNLINE table & stnDeatails table
+                    insertSTN(r); //insert into STNLINE table & stnDetails table
             } catch (Exception e) {
-                ;
+                e.printStackTrace();
             }
         }
 
@@ -205,7 +214,12 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
 
         linerow.setAttribute("Stn",
                              getPopulateValue(poprow, "Stn")); //getPopulateValue() returns column value
-
+        
+        linerow.setAttribute("PocId",
+                                    getPopulateValue(poprow, "PocId"));
+        
+        linerow.setAttribute("SystemId", getPopulateValue(poprow, "SystemId"));
+        
         linerow.setAttribute("Color", getPopulateValue(poprow, "Color"));
         linerow.setAttribute("Wash", getPopulateValue(poprow, "Wash"));
 
@@ -218,7 +232,7 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
         linerow.setAttribute("ProdLine", 1);
 
 
-        insertDetailBlock(); //TODO insert into detail table
+        insertDetailBlock(); ////Added by Sakibul Islam on 15.Apr.18 insert into detail table
 
     } //end of populateLines
 
@@ -251,6 +265,26 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
         String Season = vo.getCurrentRow().getAttribute("Season").toString();
 
         return Season;
+
+    }
+    
+    public String getPocId() {
+
+        ViewObject vo = getHeaderVO1();
+
+        String PocId = vo.getCurrentRow().getAttribute("PocId").toString();
+
+        return PocId;
+
+    }
+    
+    public String getSystemId() {
+
+        ViewObject vo = getHeaderVO1();
+
+        String SystemId = vo.getCurrentRow().getAttribute("SystemId").toString();
+
+        return SystemId;
 
     }
 
@@ -363,181 +397,81 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
     }
 
     public void OrgAssignToPrintEmbriodery() {
-        System.out.println();
-        System.out.println("Entering Auto Organization Assign Against Printing & Embriodery Block");
-        ViewObject detailvo = getDetailBlockAutoAssign1();
-        RowSetIterator it = detailvo.createRowSetIterator("pp");
-
-
-        while (it.hasNext()) {
-
-            Row Pop =
-                it.next(); //pop contains next row elements of DetailBlockAutoAssign VO
-
-
-            String DefaultFinalOrg =
-                AutoOrgAssignToPrintingEmbriodery((String)Pop.getAttribute("PrimaryInvOrg"),
-                                                  (String)Pop.getAttribute("PriDep")); //we will get only CWPL, CAL, 3rd Party & GFL
-
-            String PriDep = (String)Pop.getAttribute("PriDep");
-            String PrimaryInvOrganization = (String)Pop.getAttribute("PrimaryInvOrg");
-            
-            //PrimaryInvOrg = (String)Pop.getAttribute("PrimaryInvOrg");
-
-           
+        try {
             System.out.println();
-            System.out.println("Primary Org: " + PrimaryInvOrganization);
-            System.out.println("Pri Dep: " + PriDep);
-            System.out.println();
-            System.out.println("Default Final Org: " + "----> " + DefaultFinalOrg + " <---");
-            
-            if (PrimaryInvOrganization.equals("CAL Unit1") || PrimaryInvOrganization.equals("CGL Unit1")) {
-                if (PriDep.equals("Printing")) {
-                    System.out.println("In Default Unit: CWPL Unit1");
-                    //Pop.setAttribute("FinalInvOrg", "CWPL Unit1" );
-                    
-                    
-                    //row.setAttribute("FinalInvOrg", DefaultUnitForPrinting );
-                    //System.out.println("DefaultUnitForPrinting: " + "----> " + DefaultUnitForPrinting + " <---" );
-                    
+            System.out.println("Entering Auto Organization Assign Against Printing & Embriodery Block");
+            ViewObject detailvo = getDetailBlockAutoAssign1();
+            RowSetIterator it = detailvo.createRowSetIterator("pp2");
+
+
+            while (it.hasNext()) {
+
+                Row row =
+                    it.next(); //row contains next row elements of DetailBlockAutoAssign VO
+
+
+                String DefaultFinalOrg =
+                    AutoOrgAssignToPrintingEmbriodery((String)row.getAttribute("PrimaryInvOrg"),
+                                                      (String)row.getAttribute("PriDep")); //we will get only CWPL, CAL, 3rd Party & GFL
+
+                String PriDep = (String)row.getAttribute("PriDep");
+                String PrimaryInvOrganization = (String)row.getAttribute("PrimaryInvOrg");
+                
+                //PrimaryInvOrg = (String)Pop.getAttribute("PrimaryInvOrg");
+
+               
+                System.out.println();
+                System.out.println("Primary Org: " + PrimaryInvOrganization);
+                System.out.println("Pri Dep: " + PriDep);
+                System.out.println();
+                System.out.println("Default Final Org: " + "----> " + DefaultFinalOrg + " <---");
+                
+                if (PrimaryInvOrganization.equals("CAL Unit1") || PrimaryInvOrganization.equals("CGL Unit1")) {
+                    if (PriDep.equals("Printing")) {
+                        System.out.println("In Default Unit: CWPL Unit1");
+                        //Pop.setAttribute("FinalInvOrg", "CWPL Unit1" );
+                        
+                        
+                        //row.setAttribute("FinalInvOrg", DefaultUnitForPrinting );
+                        //System.out.println("DefaultUnitForPrinting: " + "----> " + DefaultUnitForPrinting + " <---" );
+                        
+                    }
+
+                    else if (PriDep.equals("Embriodery")) {
+                        System.out.println("In Default Unit: CAL Unit1");
+                        //Pop.setAttribute("FinalInvOrg", "CAL Unit1" );
+                        //System.out.println("DefaultUnitForEmbriodery: " + "----> " + DefaultUnitForEmbriodery + " <---" );
+                        
+                    }
                 }
 
-                else if (PriDep.equals("Embriodery")) {
-                    System.out.println("In Default Unit: CAL Unit1");
-                    //Pop.setAttribute("FinalInvOrg", "CAL Unit1" );
-                    //System.out.println("DefaultUnitForEmbriodery: " + "----> " + DefaultUnitForEmbriodery + " <---" );
-                    
-                }
-            }
+                else if (PrimaryInvOrganization.equals("GDL Unit1") ||
+                         PrimaryInvOrganization.equals("GFL Unit1")) {
+                    if (PriDep.equals("Printing")) {
+                        System.out.println("In Default Unit: 3rd Party");
+                        //System.out.println("DefaultUnitForPrinting: " + "----> " + DefaultUnitForPrinting + " <---" );
+                       
+                    } else if (PriDep.equals("Embriodery")) {
+                        System.out.println("In Default Unit: GFL Unit1");
+                        //System.out.println("DefaultUnitForEmbriodery: " + "----> " + DefaultUnitForEmbriodery + " <---" );
+                        
+                    }
 
-            else if (PrimaryInvOrganization.equals("GDL Unit1") ||
-                     PrimaryInvOrganization.equals("GFL Unit1")) {
-                if (PriDep.equals("Printing")) {
-                    System.out.println("In Default Unit: 3rd Party");
-                    //System.out.println("DefaultUnitForPrinting: " + "----> " + DefaultUnitForPrinting + " <---" );
-                   
-                } else if (PriDep.equals("Embriodery")) {
-                    System.out.println("In Default Unit: GFL Unit1");
-                    //System.out.println("DefaultUnitForEmbriodery: " + "----> " + DefaultUnitForEmbriodery + " <---" );
-                    
+                }
+                else {
+                    System.out.println("Default Unit: " + PrimaryInvOrganization);
                 }
 
             }
-            else {
-                System.out.println("Default Unit: " + PrimaryInvOrganization);
-            }
-            
-            
-//            if (PrimaryInvOrganization.equals("CAL Unit1") &&
-//                PriDep.equals("Printing")) {
-//
-//                Pop.setAttribute("FinalInvOrg", "CWPL Unit1");
-//
-//            } else if (PrimaryInvOrganization.equals("CAL Unit1") &&
-//                       PriDep.equals("Embriodery")) {
-//                Pop.setAttribute("FinalInvOrg", "CAL Unit1");
-//
-//            }
-//            else if (PrimaryInvOrganization.equals("CGL Unit1") &&
-//                                       PriDep.equals("Embriodery")) {
-//                                Pop.setAttribute("FinalInvOrg", "CAL Unit1");
-//
-//                            }
-//            else if (PrimaryInvOrganization.equals("CGL Unit1") &&
-//                                   PriDep.equals("Printing")) {
-//                            Pop.setAttribute("FinalInvOrg", "CWPL Unit1");
-//
-//                        }
-        
 
-
-//                        ViewObject vo = getDepAssignVO1();
-//                        RowSetIterator iterator = vo.createRowSetIterator("mm");
-//            
-//                        while (iterator.hasNext()) {
-//                            Row row = iterator.next();
-//                            
-//            
-//                                if (PrimaryInvOrganization.equals("CAL Unit1") || PrimaryInvOrganization.equals("CGL Unit1")) {
-//                                    if (PriDep.equals("Printing")) {
-//                                        System.out.println("Default Unit: CWPL Unit1");
-//                                        row.setAttribute("FinalInvOrg", "CWPL Unit1");
-//                                        //Pop.setAttribute("FinalInvOrg", "CWPL Unit1" );
-//                                        
-//                                        
-//                                        //row.setAttribute("FinalInvOrg", DefaultUnitForPrinting );
-//                                        //System.out.println("DefaultUnitForPrinting: " + "----> " + DefaultUnitForPrinting + " <---" );
-//                                        
-//                                    }
-//
-//                                    else if (PriDep.equals("Embriodery")) {
-//                                        System.out.println("Default Unit: CAL Unit1");
-//                                        row.setAttribute("FinalInvOrg", "CAL Unit1");
-//                                        //Pop.setAttribute("FinalInvOrg", "CAL Unit1" );
-//                                        //System.out.println("DefaultUnitForEmbriodery: " + "----> " + DefaultUnitForEmbriodery + " <---" );
-//                                        
-//                                    }
-//                                }
-//
-//                                else if (PrimaryInvOrganization.equals("GDL Unit1") ||
-//                                         PrimaryInvOrganization.equals("GFL Unit1")) {
-//                                    if (PriDep.equals("Printing")) {
-//                                        System.out.println("Default Unit: 3rd Party");
-//                                        row.setAttribute("FinalInvOrg", "3rd Party");
-//                                        //System.out.println("DefaultUnitForPrinting: " + "----> " + DefaultUnitForPrinting + " <---" );
-//                                       
-//                                    } else if (PriDep.equals("Embriodery")) {
-//                                        System.out.println("Default Unit: GFL Unit1");
-//                                        row.setAttribute("FinalInvOrg", "GFL Unit1");
-//                                        //System.out.println("DefaultUnitForEmbriodery: " + "----> " + DefaultUnitForEmbriodery + " <---" );
-//                                        
-//                                    }
-//
-//                                }
-//                                else {
-//                                    System.out.println("Default Unit: " + PrimaryInvOrganization);
-//                                }
-//                        }
-//                        iterator.closeRowSetIterator();
-
-
-            //                String CurrentPrimaryOrg = (String)Pop.getAttribute("PrimaryInvOrg");
-            //                System.out.println("Current Primary Org: " + CurrentPrimaryOrg);
-
-            //                linerow.setAttribute("PrimaryMfgOrgId",
-            //                                     getPopulateValue(Pop, "PrimaryInvOrgId")); //Set the value for the named attribute
-            //
-            //
-            //
-            //                linerow.setAttribute("PrimaryDepartment",
-            //                                     getPopulateValue(Pop, "PriDep"));
-            //
-            //                linerow.setAttribute("FinalMfgOrgId",
-            //                                     getPopulateValue(Pop, "FinalInvOrgId"));
-            //
-            //                linerow.setAttribute("FinalDepartment",
-            //                                     getPopulateValue(Pop, "FinDep"));
-            //
-            //                linerow.setAttribute("PrimaryInvOrg",
-            //                                     getPopulateValue(Pop, "PrimaryInvOrg"));
-            //
-            //                linerow.setAttribute("FinalInvOrg",
-            //                                     getPopulateValue(Pop, "FinalInvOrg"));
-            //
-            //                //linerow.setAttribute("FinalInvOrg","tttttttttttttttttt");
-            //
-            //                linerow.setAttribute("OperationSequence",
-            //                                     getPopulateValue(Pop, "OpSeq"));
+            it.closeRowSetIterator(); 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        it.closeRowSetIterator();
         
-        
-
-
     }
 
-    public void insertDetailBlock() { //TODO
+    public void insertDetailBlock() { ////Added by Sakibul Islam on 15.Apr.18
         System.out.println("In Insert Detail Block");
 
 
@@ -685,13 +619,8 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
                     }
 
                 }
-               
-                
-            //linerow.setAttribute("FinalInvOrg", getPopulateValue(Pop, "FinalInvOrg"));
-                    
 
-            
-
+    
             linerow.setAttribute("OperationSequence",
                                  getPopulateValue(Pop, "OpSeq"));
         }
@@ -699,7 +628,7 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
         //vo.executeQuery();
     } //end of populateLines
 
-    public Row createLinesDetailBlock() { //TODO
+    public Row createLinesDetailBlock() { 
         System.out.println("In Create Detail Block");
         ViewObject vo = getDepAssignVO1();
         Row row = vo.createRow();
@@ -1232,7 +1161,7 @@ public class MainAMImpl extends ApplicationModuleImpl implements MainAM {
 
     }
 
-    public void DeptAssignToStns() { //TODO
+    public void DeptAssignToStns() { //Added by Sakibul Islam on 15.Apr.18
 
         //// Roll header part
         System.out.println("In Department Assign Block");

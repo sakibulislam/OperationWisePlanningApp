@@ -840,7 +840,7 @@ public class HeaderEOImpl extends EntityImpl {
                     setLastUpdatedDate((Date)Date.getCurrentDate()); 
                     setLastUpdatedBy(new oracle.jbo.domain.Number(user));
                 } catch (SQLException f) {
-                    System.out.println(f.getMessage());
+                    f.printStackTrace();
                 }
             }
             else if (DML_INSERT == operation){
@@ -854,7 +854,7 @@ public class HeaderEOImpl extends EntityImpl {
                     setRespid(new oracle.jbo.domain.Number(RespId));
                 
                 } catch (SQLException f) {
-                    ;
+                    f.printStackTrace();
                 }
             }
             super.doDML(operation, e);

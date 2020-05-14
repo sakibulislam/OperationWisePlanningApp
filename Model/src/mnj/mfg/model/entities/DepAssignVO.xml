@@ -102,8 +102,10 @@
        DepAssignEO.FINAL_MFG_ORG_ID, 
        DepAssignEO.FINAL_DEPARTMENT, 
        DepAssignEO.CREATION_DATE, 
-       DepAssignEO.CREATED_BY, 
-       DepAssignEO.LAST_UPDATED_BY, 
+       DepAssignEO.CREATED_BY,
+       (select fu.user_name from fnd_user fu where fu.user_id = DepAssignEO.CREATED_BY) Creator_Name, 
+       DepAssignEO.LAST_UPDATED_BY,
+       (select fu.user_name from fnd_user fu where fu.user_id = DepAssignEO.LAST_UPDATED_BY) Last_Updater_Name, 
        DepAssignEO.ORG_ID, 
        DepAssignEO.LAST_UPDATED_DATE, 
        DepAssignEO.USERID, 
@@ -188,11 +190,41 @@ FROM MNJ_MFG_OSP_DEP_ASSIGN DepAssignEO]]>
     EntityUsage="DepAssignEO"
     AliasName="CREATED_BY"/>
   <ViewAttribute
+    Name="CreatorName"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="100"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="CREATOR_NAME"
+    Expression="CREATOR_NAME"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="100"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
     Name="LastUpdatedBy"
     PrecisionRule="true"
     EntityAttrName="LastUpdatedBy"
     EntityUsage="DepAssignEO"
     AliasName="LAST_UPDATED_BY"/>
+  <ViewAttribute
+    Name="LastUpdaterName"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="100"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="LAST_UPDATER_NAME"
+    Expression="LAST_UPDATER_NAME"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="100"/>
+    </DesignTime>
+  </ViewAttribute>
   <ViewAttribute
     Name="OrgId"
     PrecisionRule="true"

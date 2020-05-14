@@ -73,6 +73,12 @@
           <Item Value="ChangInvOrg"/>
           <Item Value="JobName"/>
           <Item Value="Wash"/>
+          <Item Value="PocId"/>
+          <Item Value="SystemId"/>
+          <Item Value="CreatorName"/>
+          <Item Value="CreationDate"/>
+          <Item Value="LastUpdaterName"/>
+          <Item Value="LastUpdatedDate"/>
         </AttrNames>
       </nodeDefinition>
     </tree>
@@ -92,6 +98,10 @@
           <Item Value="FinalInvOrg"/>
           <Item Value="NegotiablePrice"/>
           <Item Value="OperationSequence"/>
+          <Item Value="CreatorName"/>
+          <Item Value="CreationDate"/>
+          <Item Value="LastUpdaterName"/>
+          <Item Value="LastUpdatedDate"/>
         </AttrNames>
       </nodeDefinition>
     </tree>
@@ -128,6 +138,8 @@
           <Item Value="Part"/>
           <Item Value="Flag" Binds="Flag"/>
           <Item Value="Wash"/>
+          <Item Value="PocId"/>
+          <Item Value="SystemId"/>
         </AttrNames>
       </nodeDefinition>
     </tree>

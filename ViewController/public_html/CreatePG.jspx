@@ -8,7 +8,7 @@
     <af:document id="d1">
       <af:messages id="m1"/>
       <af:form id="f1">
-        <af:panelHeader text="Planning Form" id="ph2">
+        <af:panelHeader text="Production Order Planning Form" id="ph2">
           <f:facet name="context"/>
           <f:facet name="menuBar"/>
           <f:facet name="toolbar"/>
@@ -21,7 +21,8 @@
             <f:facet name="legend"/>
             <f:facet name="info"/>
             <af:panelFormLayout id="pfl1" maxColumns="2" rows="8"
-                                inlineStyle="width:788px;">
+                                inlineStyle="width:788px;"
+                                partialTriggers="cb1">
               <af:panelLabelAndMessage label="Document Number:" id="plam1">
                 <af:outputText value="#{bindings.DocNo.inputValue}" id="ot2">
                   <af:convertNumber groupingUsed="false"
@@ -45,11 +46,11 @@
                                     value="#{bindings.CombinedAttribute1.inputValue}"
                                     label="Search Combination:"
                                     model="#{bindings.CombinedAttribute1.listOfValuesModel}"
-                                    required="#{bindings.CombinedAttribute1.hints.mandatory}"
                                     columns="#{bindings.CombinedAttribute1.hints.displayWidth}"
                                     shortDesc="#{bindings.CombinedAttribute1.hints.tooltip}"
                                     autoSubmit="true"
-                                    visible="#{bindings.PocId.inputValue == null ? 'true':'false'}">
+                                    visible="#{bindings.PocId.inputValue == null ? 'true':'false'}"
+                                    required="true">
                 <f:validator binding="#{bindings.CombinedAttribute1.validator}"/>
                 <af:autoSuggestBehavior suggestedItems="#{bindings.CombinedAttribute1.suggestedItems}"/>
               </af:inputListOfValues>
@@ -163,7 +164,7 @@
                     <af:spacer width="500" height="10" id="s1"/>
                     <af:commandButton actionListener="#{bindings.Commit.execute}"
                                       text="Save"
-                                      id="cb1"/>
+                                      id="cb1" partialSubmit="true"/>
                     <af:commandButton actionListener="#{bindings.Rollback.execute}"
                                       text="Back"
                                       immediate="true" id="cb2"
@@ -243,24 +244,24 @@
                                     text="Delete"
                                     disabled="#{!bindings.Delete.enabled}"
                                     id="cb4" rendered="false"/>
-                  <af:commandButton text="DELETE" id="cb27"
+                  <af:commandButton text="Delete" id="cb27"
                                     actionListener="#{MainBean.deleteOnConditionFromLine}"
                                     disabled="#{bindings.StnLineVO1.estimatedRowCount&lt;1 ? 'true':'false'}"/>
                   <af:commandButton text="Fill STN" id="cb8"
                                     partialSubmit="true">
-                    <af:showPopupBehavior popupId="::p1"/>
+                    <af:showPopupBehavior popupId="::p1" alignId="::f1"/>
                   </af:commandButton>
                   <af:commandButton text="Split STN" id="cb7">
-                    <af:showPopupBehavior popupId="::p2"/>
+                    <af:showPopupBehavior popupId="::p2" alignId="::f1"/>
                   </af:commandButton>
                   <af:commandButton text="Assign Org" id="cb17">
-                    <af:showPopupBehavior popupId="p3"/>
+                    <af:showPopupBehavior popupId="p3" alignId="::f1"/>
                   </af:commandButton>
                   <af:commandButton text="Assign Embr" id="cb23">
-                    <af:showPopupBehavior popupId="::p8"/>
+                    <af:showPopupBehavior popupId="::p8" alignId="::f1"/>
                   </af:commandButton>
                   <af:commandButton text="Assign Print" id="cb20">
-                    <af:showPopupBehavior popupId="::p6"/>
+                    <af:showPopupBehavior popupId="::p6" alignId="::f1"/>
                   </af:commandButton>
                   <af:commandButton text="Item Creation" id="cb9"
                                     actionListener="#{MainBean.ItemCreation}"/>
@@ -287,10 +288,37 @@
                         rowBandingInterval="0"
                         filterModel="#{bindings.StnLineVO1Query.queryDescriptor}"
                         queryListener="#{bindings.StnLineVO1Query.processQuery}"
-                        filterVisible="true" varStatus="vs" id="t1" partialTriggers="::cb3 ::cb4"
+                        filterVisible="true" varStatus="vs" id="t1"
+                        partialTriggers="::cb3 ::cb4 :::cb1"
                         binding="#{MainBean.stnTable}" clientComponent="true"
                         rowSelection="single"
                         selectionListener="#{bindings.StnLineVO1.collectionModel.makeCurrent}">
+                <af:column headerText="#{bindings.StnLineVO1.hints.SystemId.label}"
+                           id="c50" visible="false">
+                  <af:outputText value="#{row.SystemId}" id="ot25">
+                    <af:convertNumber groupingUsed="false"
+                                      pattern="#{bindings.StnLineVO1.hints.SystemId.format}"/>
+                  </af:outputText>
+                </af:column>
+                <af:column headerText="#{bindings.StnLineVO1.hints.PocId.label}"
+                           id="c48" visible="false">
+                  <af:outputText value="#{row.PocId}" id="ot24">
+                    <af:convertNumber groupingUsed="false"
+                                      pattern="#{bindings.StnLineVO1.hints.PocId.format}"/>
+                  </af:outputText>
+                </af:column>
+                <af:column sortProperty="Bpo" filterable="true" sortable="true"
+                           headerText="BPO" id="c2" align="center" width="105">
+                  <af:inputText value="#{row.bindings.Bpo.inputValue}"
+                                label="#{bindings.StnLineVO1.hints.Bpo.label}"
+                                required="#{bindings.StnLineVO1.hints.Bpo.mandatory}"
+                                columns="#{bindings.StnLineVO1.hints.Bpo.displayWidth}"
+                                maximumLength="#{bindings.StnLineVO1.hints.Bpo.precision}"
+                                shortDesc="#{bindings.StnLineVO1.hints.Bpo.tooltip}"
+                                id="it12" readOnly="true">
+                    <f:validator binding="#{row.bindings.Bpo.validator}"/>
+                  </af:inputText>
+                </af:column>
                 <af:column sortProperty="Stn" filterable="true" sortable="true"
                            headerText="STN"
                            id="c1" align="center" width="103">
@@ -300,13 +328,29 @@
                                 columns="#{bindings.StnLineVO1.hints.Stn.displayWidth}"
                                 maximumLength="#{bindings.StnLineVO1.hints.Stn.precision}"
                                 shortDesc="#{bindings.StnLineVO1.hints.Stn.tooltip}"
-                                id="it11">
+                                id="it11" readOnly="true">
                     <f:validator binding="#{row.bindings.Stn.validator}"/>
+                  </af:inputText>
+                </af:column>
+                <af:column sortProperty="StnQty" filterable="true"
+                           sortable="true" headerText="STN Qty" id="c4"
+                           align="center" width="105">
+                  <af:inputText value="#{row.bindings.StnQty.inputValue}"
+                                label="#{bindings.StnLineVO1.hints.StnQty.label}"
+                                required="#{bindings.StnLineVO1.hints.StnQty.mandatory}"
+                                columns="#{bindings.StnLineVO1.hints.StnQty.displayWidth}"
+                                maximumLength="#{bindings.StnLineVO1.hints.StnQty.precision}"
+                                shortDesc="#{bindings.StnLineVO1.hints.StnQty.tooltip}"
+                                id="it13" binding="#{MainBean.stnLineStnQty}"
+                                readOnly="true">
+                    <f:validator binding="#{row.bindings.StnQty.validator}"/>
+                    <af:convertNumber groupingUsed="false"
+                                      pattern="#{bindings.StnLineVO1.hints.StnQty.format}"/>
                   </af:inputText>
                 </af:column>
                 <af:column sortProperty="Color" filterable="true"
                            sortable="true"
-                           headerText="#{bindings.StnLineVO1.hints.Color.label}"
+                           headerText="Color"
                            id="c5" align="center" width="107">
                   <af:inputText value="#{row.bindings.Color.inputValue}"
                                 label="#{bindings.StnLineVO1.hints.Color.label}"
@@ -314,7 +358,7 @@
                                 columns="#{bindings.StnLineVO1.hints.Color.displayWidth}"
                                 maximumLength="#{bindings.StnLineVO1.hints.Color.precision}"
                                 shortDesc="#{bindings.StnLineVO1.hints.Color.tooltip}"
-                                id="it9">
+                                id="it9" readOnly="true">
                     <f:validator binding="#{row.bindings.Color.validator}"/>
                   </af:inputText>
                 </af:column>
@@ -327,50 +371,8 @@
                                 columns="#{bindings.StnLineVO1.hints.Wash.displayWidth}"
                                 maximumLength="#{bindings.StnLineVO1.hints.Wash.precision}"
                                 shortDesc="#{bindings.StnLineVO1.hints.Wash.tooltip}"
-                                id="it22">
+                                id="it22" readOnly="true">
                     <f:validator binding="#{row.bindings.Wash.validator}"/>
-                  </af:inputText>
-                </af:column>
-                <af:column sortProperty="Bpo" filterable="true" sortable="true"
-                           headerText="BPO"
-                           id="c2" align="center" width="105">
-                  <af:inputText value="#{row.bindings.Bpo.inputValue}"
-                                label="#{bindings.StnLineVO1.hints.Bpo.label}"
-                                required="#{bindings.StnLineVO1.hints.Bpo.mandatory}"
-                                columns="#{bindings.StnLineVO1.hints.Bpo.displayWidth}"
-                                maximumLength="#{bindings.StnLineVO1.hints.Bpo.precision}"
-                                shortDesc="#{bindings.StnLineVO1.hints.Bpo.tooltip}"
-                                id="it12">
-                    <f:validator binding="#{row.bindings.Bpo.validator}"/>
-                  </af:inputText>
-                </af:column>
-                <af:column sortProperty="Part" filterable="true" sortable="true"
-                           headerText="#{bindings.StnLineVO1.hints.Part.label}"
-                           id="c6" align="center" width="105">
-                  <af:inputText value="#{row.bindings.Part.inputValue}"
-                                label="#{bindings.StnLineVO1.hints.Part.label}"
-                                required="#{bindings.StnLineVO1.hints.Part.mandatory}"
-                                columns="#{bindings.StnLineVO1.hints.Part.displayWidth}"
-                                maximumLength="#{bindings.StnLineVO1.hints.Part.precision}"
-                                shortDesc="#{bindings.StnLineVO1.hints.Part.tooltip}"
-                                id="it10">
-                    <f:validator binding="#{row.bindings.Part.validator}"/>
-                  </af:inputText>
-                </af:column>
-                <af:column sortProperty="StnQty" filterable="true"
-                           sortable="true"
-                           headerText="STN Qty"
-                           id="c4" align="center" width="105">
-                  <af:inputText value="#{row.bindings.StnQty.inputValue}"
-                                label="#{bindings.StnLineVO1.hints.StnQty.label}"
-                                required="#{bindings.StnLineVO1.hints.StnQty.mandatory}"
-                                columns="#{bindings.StnLineVO1.hints.StnQty.displayWidth}"
-                                maximumLength="#{bindings.StnLineVO1.hints.StnQty.precision}"
-                                shortDesc="#{bindings.StnLineVO1.hints.StnQty.tooltip}"
-                                id="it13" binding="#{MainBean.stnLineStnQty}">
-                    <f:validator binding="#{row.bindings.StnQty.validator}"/>
-                    <af:convertNumber groupingUsed="false"
-                                      pattern="#{bindings.StnLineVO1.hints.StnQty.format}"/>
                   </af:inputText>
                 </af:column>
                 <af:column sortProperty="ProdLine" filterable="true"
@@ -383,10 +385,23 @@
                                 columns="#{bindings.StnLineVO1.hints.ProdLine.displayWidth}"
                                 maximumLength="#{bindings.StnLineVO1.hints.ProdLine.precision}"
                                 shortDesc="#{bindings.StnLineVO1.hints.ProdLine.tooltip}"
-                                id="it15">
+                                id="it15" contentStyle="text-align:center;">
                     <f:validator binding="#{row.bindings.ProdLine.validator}"/>
                     <af:convertNumber groupingUsed="false"
                                       pattern="#{bindings.StnLineVO1.hints.ProdLine.format}"/>
+                  </af:inputText>
+                </af:column>
+                <af:column sortProperty="Part" filterable="true" sortable="true"
+                           headerText="Part"
+                           id="c6" align="center" width="105">
+                  <af:inputText value="#{row.bindings.Part.inputValue}"
+                                label="#{bindings.StnLineVO1.hints.Part.label}"
+                                required="#{bindings.StnLineVO1.hints.Part.mandatory}"
+                                columns="#{bindings.StnLineVO1.hints.Part.displayWidth}"
+                                maximumLength="#{bindings.StnLineVO1.hints.Part.precision}"
+                                shortDesc="#{bindings.StnLineVO1.hints.Part.tooltip}"
+                                id="it10" contentStyle="text-align:center;">
+                    <f:validator binding="#{row.bindings.Part.validator}"/>
                   </af:inputText>
                 </af:column>
                 <af:column sortProperty="ChangInvOrg" filterable="true"
@@ -399,15 +414,37 @@
                                 columns="#{bindings.StnLineVO1.hints.ChangInvOrg.displayWidth}"
                                 maximumLength="#{bindings.StnLineVO1.hints.ChangInvOrg.precision}"
                                 shortDesc="#{bindings.StnLineVO1.hints.ChangInvOrg.tooltip}"
-                                id="it14">
+                                id="it14" contentStyle="text-align:center;">
                     <f:validator binding="#{row.bindings.ChangInvOrg.validator}"/>
                   </af:inputText>
                 </af:column>
                 <af:column headerText="Job Name"
                            id="c27" align="center" sortable="true"
-                           filterable="true" sortProperty="JobName" width="105">
+                           filterable="true" sortProperty="JobName" width="200">
                   <af:outputText value="#{row.JobName}" id="ot8"/>
                 </af:column>
+                <f:facet name="detailStamp">
+                  <af:panelFormLayout id="pfl2">
+                    <af:panelLabelAndMessage label="Creator:" id="plam16">
+                      <af:outputText value="#{row.CreatorName}" id="ot26"/>
+                    </af:panelLabelAndMessage>
+                    <af:panelLabelAndMessage label="Creation Date:" id="plam18">
+                      <af:outputText value="#{row.CreationDate}" id="ot28">
+                        <af:convertDateTime pattern="#{bindings.StnLineVO1.hints.CreationDate.format}"/>
+                      </af:outputText>
+                    </af:panelLabelAndMessage>
+                    <af:panelLabelAndMessage label="Last Updater:"
+                                             id="plam15">
+                      <af:outputText value="#{row.LastUpdaterName}" id="ot27"/>
+                    </af:panelLabelAndMessage>
+                    <af:panelLabelAndMessage label="Last Update Date"
+                                             id="plam17">
+                      <af:outputText value="#{row.LastUpdatedDate}" id="ot29">
+                        <af:convertDateTime pattern="#{bindings.StnLineVO1.hints.LastUpdatedDate.format}"/>
+                      </af:outputText>
+                    </af:panelLabelAndMessage>
+                  </af:panelFormLayout>
+                </f:facet>
               </af:table>
             </af:panelCollection>
             <af:panelCollection id="pc2" styleClass="AFStretchWidth">
@@ -422,7 +459,7 @@
                                     text="Delete"
                                     disabled="#{!bindings.Delete1.enabled}"
                                     id="cb6" rendered="false"/>
-                  <af:commandButton text="DELETE" id="cb26"
+                  <af:commandButton text="Delete" id="cb26"
                                     partialSubmit="true"
                                     actionListener="#{MainBean.deleteOnCondition}"
                                     disabled="#{bindings.DepAssignVO1.estimatedRowCount&lt;1 ? 'true':'false'}"/>
@@ -436,7 +473,8 @@
                         rowBandingInterval="0"
                         filterModel="#{bindings.DepAssignVO1Query.queryDescriptor}"
                         queryListener="#{bindings.DepAssignVO1Query.processQuery}"
-                        filterVisible="true" varStatus="vs" id="t3" partialTriggers="::cb5 ::cb6 :::pc1:t1"
+                        filterVisible="true" varStatus="vs" id="t3"
+                        partialTriggers=":::pc1:t1 ::cb5 ::cb6 :::cb1"
                         binding="#{MainBean.detailTable}" rowSelection="single"
                         selectionListener="#{bindings.DepAssignVO1.collectionModel.makeCurrent}">
                 <af:column headerText="Operation Sequence"
@@ -485,7 +523,8 @@
                 </af:column>
                 <af:column headerText="Final Inv Org"
                            id="c13" align="center" sortable="true"
-                           filterable="true" sortProperty="FinalInvOrg">
+                           filterable="true" sortProperty="FinalInvOrg"
+                           width="150">
                   <af:inputListOfValues id="finalInvOrgId"
                                         popupTitle="Search and Select: #{bindings.DepAssignVO1.hints.FinalInvOrg.label}"
                                         value="#{row.bindings.FinalInvOrg.inputValue}"
@@ -528,6 +567,27 @@
                                       pattern="#{bindings.DepAssignVO1.hints.NegotiablePrice.format}"/>
                   </af:inputText>
                 </af:column>
+                <f:facet name="detailStamp">
+                  <af:panelFormLayout id="pfl3">
+                    <af:panelLabelAndMessage label="Creator:" id="plam20">
+                      <af:outputText value="#{row.CreatorName}" id="ot30"/>
+                    </af:panelLabelAndMessage>
+                    <af:panelLabelAndMessage label="Creation Date:" id="plam22">
+                      <af:outputText value="#{row.CreationDate}" id="ot31">
+                        <af:convertDateTime pattern="#{bindings.DepAssignVO1.hints.CreationDate.format}"/>
+                      </af:outputText>
+                    </af:panelLabelAndMessage>
+                    <af:panelLabelAndMessage label="Last Updater:" id="plam19">
+                      <af:outputText value="#{row.LastUpdaterName}" id="ot32"/>
+                    </af:panelLabelAndMessage>
+                    <af:panelLabelAndMessage label="Last Update Date:"
+                                             id="plam21">
+                      <af:outputText value="#{row.LastUpdatedDate}" id="ot33">
+                        <af:convertDateTime pattern="#{bindings.DepAssignVO1.hints.LastUpdatedDate.format}"/>
+                      </af:outputText>
+                    </af:panelLabelAndMessage>
+                  </af:panelFormLayout>
+                </f:facet>
               </af:table>
             </af:panelCollection>
           </af:panelHeader>
@@ -538,7 +598,7 @@
                   contentDelivery="lazyUncached">
           <af:dialog id="d2" dialogListener="#{MainBean.editDialogLisSTNNew}"
                      title="Fill STNs">
-            <af:panelCollection id="pc3" inlineStyle="width:648px;">
+            <af:panelCollection id="pc3" inlineStyle="width:700px;">
               <f:facet name="menus"/>
               <f:facet name="toolbar">
                 <af:toolbar id="t6">
@@ -563,11 +623,22 @@
                         rowSelection="multiple" id="t5" width="100%"
                         binding="#{MainBean.stnPopUpTable}">
                 <af:column headerText="Select" id="c15" align="center"
-                           width="110">
+                           width="30">
                   <af:selectBooleanCheckbox value="#{row.bindings.Flag.inputValue}"
                                             label="#{row.bindings.Flag.label}"
                                             shortDesc="#{bindings.StnVO1.hints.Flag.tooltip}"
                                             id="sbc1"/>
+                </af:column>
+                <af:column headerText="#{bindings.StnVO1.hints.PocId.label}"
+                           id="c46" rendered="true" visible="false">
+                  <af:outputText value="#{row.PocId}" id="ot22"/>
+                </af:column>
+                <af:column headerText="#{bindings.StnVO1.hints.SystemId.label}"
+                           id="c47" rendered="true" visible="false">
+                  <af:outputText value="#{row.SystemId}" id="ot23">
+                    <af:convertNumber groupingUsed="false"
+                                      pattern="#{bindings.StnVO1.hints.SystemId.format}"/>
+                  </af:outputText>
                 </af:column>
                 <af:column sortProperty="BpoNo" sortable="true"
                            headerText="BPO No" id="c14" align="center"
@@ -580,6 +651,18 @@
                                 shortDesc="#{bindings.StnVO1.hints.BpoNo.tooltip}"
                                 id="it5">
                     <f:validator binding="#{row.bindings.BpoNo.validator}"/>
+                  </af:inputText>
+                </af:column>
+                <af:column sortProperty="Stn" filterable="true" sortable="true"
+                           headerText="STN" id="c17" align="center" width="109">
+                  <af:inputText value="#{row.bindings.Stn.inputValue}"
+                                label="#{bindings.StnVO1.hints.Stn.label}"
+                                required="#{bindings.StnVO1.hints.Stn.mandatory}"
+                                columns="#{bindings.StnVO1.hints.Stn.displayWidth}"
+                                maximumLength="#{bindings.StnVO1.hints.Stn.precision}"
+                                shortDesc="#{bindings.StnVO1.hints.Stn.tooltip}"
+                                id="it8">
+                    <f:validator binding="#{row.bindings.Stn.validator}"/>
                   </af:inputText>
                 </af:column>
                 <af:column sortProperty="OrderedQty" filterable="true"
@@ -595,18 +678,6 @@
                     <f:validator binding="#{row.bindings.OrderedQty.validator}"/>
                     <af:convertNumber groupingUsed="false"
                                       pattern="#{bindings.StnVO1.hints.OrderedQty.format}"/>
-                  </af:inputText>
-                </af:column>
-                <af:column sortProperty="Stn" filterable="true" sortable="true"
-                           headerText="STN" id="c17" align="center" width="109">
-                  <af:inputText value="#{row.bindings.Stn.inputValue}"
-                                label="#{bindings.StnVO1.hints.Stn.label}"
-                                required="#{bindings.StnVO1.hints.Stn.mandatory}"
-                                columns="#{bindings.StnVO1.hints.Stn.displayWidth}"
-                                maximumLength="#{bindings.StnVO1.hints.Stn.precision}"
-                                shortDesc="#{bindings.StnVO1.hints.Stn.tooltip}"
-                                id="it8">
-                    <f:validator binding="#{row.bindings.Stn.validator}"/>
                   </af:inputText>
                 </af:column>
                 <af:column sortProperty="Color" filterable="true"
@@ -636,7 +707,7 @@
                   </af:inputText>
                 </af:column>
                 <af:column sortProperty="Part" filterable="true" sortable="true"
-                           headerText="Part" id="c11" align="center" width="9">
+                           headerText="Part" id="c11" align="center" width="50">
                   <af:inputText value="#{row.bindings.Part.inputValue}"
                                 label="#{bindings.StnVO1.hints.Part.label}"
                                 required="#{bindings.StnVO1.hints.Part.mandatory}"
@@ -760,8 +831,8 @@
                       selectionListener="#{bindings.DepartmentAssignPopUp1.collectionModel.makeCurrent}"
                       rowSelection="single" id="t9"
                       binding="#{MainBean.bindingAssignDepartment}">
-              <af:column headerText="#{bindings.DepartmentAssignPopUp1.hints.SelectBox.label}"
-                         id="c31">
+              <af:column headerText="Select"
+                         id="c31" align="center" width="50">
                 <af:selectBooleanCheckbox value="#{row.bindings.SelectBox.inputValue}"
                                           label="#{row.bindings.SelectBox.label}"
                                           shortDesc="#{bindings.DepartmentAssignPopUp1.hints.SelectBox.tooltip}"
@@ -770,14 +841,14 @@
               <af:column sortProperty="Department" filterable="true"
                          sortable="true"
                          headerText="Department Name"
-                         id="c30" width="180">
+                         id="c30" width="200" align="center">
                 <af:inputText value="#{row.bindings.Department.inputValue}"
                               label="#{bindings.DepartmentAssignPopUp1.hints.Department.label}"
                               required="#{bindings.DepartmentAssignPopUp1.hints.Department.mandatory}"
                               columns="#{bindings.DepartmentAssignPopUp1.hints.Department.displayWidth}"
                               maximumLength="#{bindings.DepartmentAssignPopUp1.hints.Department.precision}"
                               shortDesc="#{bindings.DepartmentAssignPopUp1.hints.Department.tooltip}"
-                              id="it23">
+                              id="it23" contentStyle="text-align:center;">
                   <f:validator binding="#{row.bindings.Department.validator}"/>
                 </af:inputText>
               </af:column>

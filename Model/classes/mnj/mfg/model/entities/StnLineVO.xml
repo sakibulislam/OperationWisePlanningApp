@@ -26,8 +26,10 @@
        StnLineEO.CHANG_INV_ORG, 
        StnLineEO.TIME_CAL, 
        StnLineEO.CREATION_DATE, 
-       StnLineEO.CREATED_BY, 
-       StnLineEO.LAST_UPDATED_BY, 
+       StnLineEO.CREATED_BY,
+       (select fu.user_name from fnd_user fu where fu.user_id = StnLineEO.CREATED_BY) Creator_Name, 
+       StnLineEO.LAST_UPDATED_BY,
+       (select fu.user_name from fnd_user fu where fu.user_id = StnLineEO.LAST_UPDATED_BY) Last_Updater_Name,  
        StnLineEO.ORG_ID, 
        StnLineEO.LAST_UPDATED_DATE, 
        StnLineEO.USERID, 
@@ -42,7 +44,9 @@
        and j.status_type not in (7,12)
        and rownum = 1
       -- and j.attribute3=2097
-       ) job_name
+       ) job_name,
+       StnLineEO.SYSTEM_ID, 
+       StnLineEO.POC_ID
 FROM MNJ_MFG_OSP_STN_LINE StnLineEO
 ORDER BY StnLineEO.STN,StnLineEO.BPO,StnLineEO.PROD_LINE]]>
   </SQLQuery>
@@ -123,11 +127,41 @@ ORDER BY StnLineEO.STN,StnLineEO.BPO,StnLineEO.PROD_LINE]]>
     EntityUsage="StnLineEO"
     AliasName="CREATED_BY"/>
   <ViewAttribute
+    Name="CreatorName"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="100"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="CREATOR_NAME"
+    Expression="CREATOR_NAME"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="100"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
     Name="LastUpdatedBy"
     PrecisionRule="true"
     EntityAttrName="LastUpdatedBy"
     EntityUsage="StnLineEO"
     AliasName="LAST_UPDATED_BY"/>
+  <ViewAttribute
+    Name="LastUpdaterName"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="100"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="LAST_UPDATER_NAME"
+    Expression="LAST_UPDATER_NAME"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="100"/>
+    </DesignTime>
+  </ViewAttribute>
   <ViewAttribute
     Name="OrgId"
     PrecisionRule="true"
@@ -180,6 +214,18 @@ ORDER BY StnLineEO.STN,StnLineEO.BPO,StnLineEO.PROD_LINE]]>
     </DesignTime>
   </ViewAttribute>
   <ViewAttribute
+    Name="SystemId"
+    PrecisionRule="true"
+    EntityAttrName="SystemId"
+    EntityUsage="StnLineEO"
+    AliasName="SYSTEM_ID"/>
+  <ViewAttribute
+    Name="PocId"
+    PrecisionRule="true"
+    EntityAttrName="PocId"
+    EntityUsage="StnLineEO"
+    AliasName="POC_ID"/>
+  <ViewAttribute
     Name="StnSelectionOrgAssignFlag"
     IsSelected="false"
     IsPersistent="false"
@@ -187,6 +233,22 @@ ORDER BY StnLineEO.STN,StnLineEO.BPO,StnLineEO.PROD_LINE]]>
     Type="java.lang.String"
     ColumnType="VARCHAR2"
     AliasName="VIEW_ATTR"
+    SQLType="VARCHAR"/>
+  <ViewAttribute
+    Name="FinItemCreated"
+    PrecisionRule="true"
+    AliasName="FIN_ITEM_CREATED"
+    IsPersistent="false"
+    Type="java.lang.String"
+    ColumnType="$none$"
+    SQLType="VARCHAR"/>
+  <ViewAttribute
+    Name="ItemCreated"
+    PrecisionRule="true"
+    AliasName="ITEM_CREATED"
+    IsPersistent="false"
+    Type="java.lang.String"
+    ColumnType="$none$"
     SQLType="VARCHAR"/>
   <ViewLinkAccessor
     Name="DepAssignVO"

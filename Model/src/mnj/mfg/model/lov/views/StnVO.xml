@@ -24,8 +24,9 @@
     </SchemaBasedProperties>
   </Properties>
   <SQLQuery>
-    <![CDATA[/* Formatted on 10/21/2019 10:52:09 AM BY SAKIBUL ISLAM (QP5 v5.256.13226.35510) */
-  SELECT BPO_NO,
+    <![CDATA[SELECT SYSTEM_ID,
+         POC_ID,
+         BPO_NO,
          SUM (ORDERED_QTY) ORDERED_QTY,
          STN,
          COLOR,
@@ -35,61 +36,83 @@
          STYLE_NAME,
          SEASON,
          ORG_ID
-    FROM (SELECT DISTINCT OOH.CUST_PO_NUMBER BPO_NO,
-                          OOLL.ORDERED_QUANTITY ORDERED_QTY,
-                          OOH.CUST_PO_NUMBER || '/' || OOLL.LINE_NUMBER STN,
-                          OOLL.ATTRIBUTE7 WASH, --ADDED BY SAKIBUL ISLAM ON 21-OCT-2019
-                          OOLL.ATTRIBUTE6 COLOR, --ADDED BY SAKIBUL ISLAM ON 21-OCT-2019
-                          /* COMMENTED BY SAKIBUL ISLAM ON 21-OCT-2019
-                          FOR PULLING EXACT COLOR & WASH
-                          DISCUSSING WITH MR WASI UDDIN & MR RABIUL ALAM */
+    FROM (/* Commented by Sakibul Islam for EBS-Restructuring Project on 13.May.2020 */
 
-                          --                         SUBSTR (DESCRIPTION,
-                          --                                   INSTR (DESCRIPTION,
-                          --                                          ':',
-                          --                                          1,
-                          --                                          1)
-                          --                                 + 1,
-                          --                                 (  (INSTR (DESCRIPTION,
-                          --                                            ':',
-                          --                                            1,
-                          --                                            2))
-                          --                                  - (  INSTR (DESCRIPTION,
-                          --                                              ':',
-                          --                                              1,
-                          --                                              1)
-                          --                                     + 1)))
-                          --                            WASH,
-                          --                         SUBSTR (DESCRIPTION,
-                          --                                   INSTR (DESCRIPTION,
-                          --                                          ':',
-                          --                                          1,
-                          --                                          2)
-                          --                                 + 1)
-                          --                            COLOR,
+          --    SELECT DISTINCT OOH.CUST_PO_NUMBER BPO_NO,
+          --                          OOLL.ORDERED_QUANTITY ORDERED_QTY,
+          --                          OOH.CUST_PO_NUMBER || '/' || OOLL.LINE_NUMBER STN,
+          --                          OOLL.ATTRIBUTE7 WASH, --ADDED BY SAKIBUL ISLAM ON 21-OCT-2019
+          --                          OOLL.ATTRIBUTE6 COLOR, --ADDED BY SAKIBUL ISLAM ON 21-OCT-2019
+          --                          /* COMMENTED BY SAKIBUL ISLAM ON 21-OCT-2019
+          --                          FOR PULLING EXACT COLOR & WASH
+          --                          DISCUSSING WITH MR WASI UDDIN & MR RABIUL ALAM */
+          --
+          --                          --                         SUBSTR (DESCRIPTION,
+          --                          --                                   INSTR (DESCRIPTION,
+          --                          --                                          ':',
+          --                          --                                          1,
+          --                          --                                          1)
+          --                          --                                 + 1,
+          --                          --                                 (  (INSTR (DESCRIPTION,
+          --                          --                                            ':',
+          --                          --                                            1,
+          --                          --                                            2))
+          --                          --                                  - (  INSTR (DESCRIPTION,
+          --                          --                                              ':',
+          --                          --                                              1,
+          --                          --                                              1)
+          --                          --                                     + 1)))
+          --                          --                            WASH,
+          --                          --                         SUBSTR (DESCRIPTION,
+          --                          --                                   INSTR (DESCRIPTION,
+          --                          --                                          ':',
+          --                          --                                          1,
+          --                          --                                          2)
+          --                          --                                 + 1)
+          --                          --                            COLOR,
+          --                          NULL PART,
+          --                          OOH.SOLD_TO_ORG_ID BUYER_ID,
+          --                          OOH.SHIPPING_INSTRUCTIONS STYLE_NAME,
+          --                          OOH.ATTRIBUTE4 SEASON,
+          --                          OOH.ORG_ID
+          --            FROM OE_ORDER_HEADERS_ALL OOH,
+          --                 OE_ORDER_LINES_ALL OOLL,
+          --                 MTL_SYSTEM_ITEMS MSI
+          --           WHERE     OOH.HEADER_ID = OOLL.HEADER_ID
+          --                 AND MSI.INVENTORY_ITEM_ID = OOLL.INVENTORY_ITEM_ID
+          --                 AND OOH.ATTRIBUTE3 = 'BPO'
+
+
+          SELECT DISTINCT bpo_view.SYSTEM_ID,
+                          bpo_view.POC_ID,
+                          bpo_view.BPO_NO BPO_NO,
+                          bpo_view.ORDER_QTY ORDERED_QTY,
+                          bpo_view.SALE_LINE_ID STN,
+                          bpo_view.WASH_NAME WASH,
+                          bpo_view.COLOUR COLOR,
                           NULL PART,
-                          OOH.SOLD_TO_ORG_ID BUYER_ID,
-                          OOH.SHIPPING_INSTRUCTIONS STYLE_NAME,
-                          OOH.ATTRIBUTE4 SEASON,
-                          OOH.ORG_ID
-            FROM OE_ORDER_HEADERS_ALL OOH,
-                 OE_ORDER_LINES_ALL OOLL,
-                 MTL_SYSTEM_ITEMS MSI
-           WHERE     OOH.HEADER_ID = OOLL.HEADER_ID
-                 AND MSI.INVENTORY_ITEM_ID = OOLL.INVENTORY_ITEM_ID
-                 AND OOH.ATTRIBUTE3 = 'BPO') ABC
+                          bpo_view.BUYER_ID,
+                          bpo_view.STYLE STYLE_NAME,
+                          bpo_view.SEASON,
+                          bpo_view.UNIT_ID ORG_ID
+            FROM xx_mnj_bpo_info_v bpo_view
+           WHERE CLASFIC = 'BPO') ABC
    WHERE NOT EXISTS
                 (SELECT 1
                    FROM MNJ_MFG_OSP_STN_LINE MMOSL, MNJ_MFG_OSP_HEADER H
-                  WHERE     MMOSL.STN = ABC.STN
-                        AND MMOSL.COLOR = ABC.COLOR
-                        AND MMOSL.BPO = ABC.BPO_NO
-                        AND H.HEADER_ID = MMOSL.HEADER_ID
-                        AND H.STYLE = ABC.STYLE_NAME
-                        AND H.SEASON = ABC.SEASON
-                        AND H.BUYER_D = ABC.BUYER_ID -- and MMOSL.wash=msib.attribute17
-                                                    )
-GROUP BY BPO_NO,
+                  WHERE     1 = 1
+                        AND TO_CHAR (MMOSL.STN) = TO_CHAR (ABC.STN)
+                        --                                                AND MMOSL.COLOR = ABC.COLOR
+                        --                                                AND MMOSL.BPO = ABC.BPO_NO
+                        --                                                AND H.HEADER_ID = MMOSL.HEADER_ID
+                        --                                                AND H.STYLE = ABC.STYLE_NAME
+                        --                                                AND H.SEASON = ABC.SEASON
+                        --                                                AND H.BUYER_D = ABC.BUYER_ID -- and MMOSL.wash=msib.attribute17
+                        AND MMOSL.POC_ID = ABC.POC_ID
+                        AND MMOSL.SYSTEM_ID = ABC.SYSTEM_ID)
+GROUP BY SYSTEM_ID,
+         POC_ID,
+         BPO_NO,
          STN,
          COLOR,
          WASH,
@@ -100,6 +123,35 @@ GROUP BY BPO_NO,
          ORG_ID
 ORDER BY BPO_NO]]>
   </SQLQuery>
+  <ViewAttribute
+    Name="SystemId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Type="oracle.jbo.domain.Number"
+    ColumnType="NUMBER"
+    AliasName="SYSTEM_ID"
+    Expression="SYSTEM_ID"
+    SQLType="NUMERIC">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="39"/>
+    </DesignTime>
+  </ViewAttribute>
+  <ViewAttribute
+    Name="PocId"
+    IsUpdateable="false"
+    IsPersistent="false"
+    PrecisionRule="true"
+    Precision="540"
+    Type="java.lang.String"
+    ColumnType="VARCHAR2"
+    AliasName="POC_ID"
+    Expression="POC_ID"
+    SQLType="VARCHAR">
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="540"/>
+    </DesignTime>
+  </ViewAttribute>
   <ViewAttribute
     Name="BpoNo"
     IsUpdateable="false"
